@@ -1,0 +1,227 @@
+--------End Point Login-------------------
+Ruta: /login
+Método: POST
+Descripción: Ingreso al sistema.
+
+Parametros de Entrada:
+usuario: usuario del cliente
+clave: clave del cliente
+
+Parámetros de salida:
+en caso de un correcto login
+token : token
+
+en caso de error: 
+sataus : 401
+message: Credenciales inválidas.
+
+--------End Point CLIENTE-------------------
+
+<<<<<<<<<<<<<<Inserta un nuevo cliente>>>>>>>>>>>>>
+Ruta: /clientes
+Método: POST
+Descripción: Inserta la información para dar de alta un nuevo cliente.
+
+Parametros de Entrada:
+usuario: usuario del cliente
+clave: clave del cliente
+nombre: nombre del cliente
+apellido: apellido del cliente
+
+ejemplo de JSON:
+{
+    "usuario" : "Tony02",
+    "clave" : "12345",
+    "nombre": "Tony",
+    "apellido" : "orozco"
+}
+
+Parámetros de salida:
+
+--------End Points EMPLEADO-------------------
+
+<<<<<<<<<<<<<<<Inserta una nueva habitación>>>>>>>>>>>>>>>>>>
+
+Ruta: /habitaciones
+Método: POST 
+Descripción: Inserta la informacion para dar de alta una habitacion
+
+Parametros de Entrada:
+numero_habitacion: El número de la habitacion
+precio: precio de la habitación
+estado: identifica la disponibilidad de la habitación. 1 discponible , 0 ocupada.
+
+ejemplo de JSON:
+        {
+           "numero_habitacion" : 4,
+           "precio" : 5000,
+           "estado" : 1
+        }
+
+Parámetros de salida:
+
+
+<<<<<<<<<<<<<<<<<<<<Edita el precio de una habitación>>>>>>>>>>>>>>>>>
+
+Ruta: /habitaciones/<numHabitacion>/precio
+Método: PUT
+Descripción: Edita el precio de una habitacion en particular enviandole el numero de habitacion
+
+Parámetros para la solicitud:
+numHabitacion: número de la habitación
+
+Parametros de Entrada:
+precio: precio de la habitación
+
+ejemplo de JSON:
+        {
+            "precio" : 3500
+        }
+Parámetros de salida:
+
+
+<<<<<<<<<<<<<<<<<<Edita el estado de una habitación>>>>>>>>>>>>>>>>>
+
+Ruta: /habitaciones/<numHabitacion>/estado
+Método: PUT
+Descripción: Edita el estado de una habitacion en particular enviandole el numero de habitacion
+
+Parámetros para la solicitud:
+numHabitacion: número de la habitación
+
+Parametros de Entrada:
+estado : el estado de habitacion si esta ocupada o no.
+ejemplo:
+        {
+            "estado" : 0
+        }
+
+Parámetros de salida:
+
+
+<<<<<<<<<<<<<<Lista de todas las reservas>>>>>>>>>>>>>>>>>>
+Ruta: /reservas
+Método: GET
+Descripción: trae todas las reservas
+
+Parámetros de respuesta: 
+id : id de la reserva
+alta_fecha: fecha en la que hizo la reserva
+fecha_inicio_hospedaje: fecha de inicio de hospedaje
+fecha_fin_hospedaje: fecha de fin de hospedaje
+id_cliente: id del cliente
+id_habitacion: id de la habitación
+
+
+<<<<<<<<<<<<<<<<<Datos de reservas>>>>>>>>>>>
+
+Ruta: /reservas/fecha/<fecha>
+Método: GET
+Descripción: Trae todas las reservas de una fecha en especifico, acepta una fecha como query params
+
+Parametros de Entrada:
+fecha: fecha especifica para saber las reservas de ese día.
+
+Parámetros de respuesta: 
+alta_fecha: fecha en la que hizo la reserva
+fecha_inicio_hospedaje: fecha de inicio de hospedaje
+fecha_fin_hospedaje: fecha de fin de hospedaje
+id_cliente: id del cliente
+id_habitacion: id de la habitación
+
+<<<<<<<<<<<<<<<<Datos de una habitación>>>>>>>>>>>>>>>>
+Ruta: /habitaciones/<id>
+Método: GET
+Descripción: busca una habitación en particular, trayendo su número, precio y las 
+reservar que posee.
+
+Parametros de Entrada:
+id : id de la habitación
+
+Parámetros de respuesta: 
+id_cliente: id del cliente
+numero_habitacion: número de la habitación
+precio: precio de la habitación
+fecha_inicio_hospedaje: fecha de inicio de hospedaje
+fecha_fin_hospedaje: fecha de fin de hospedaje
+
+---------------End Points CLIENTE-------------------
+<<<<<<<<<<<<<<<Inserta la reserva>>>>>>>>>>>>>
+
+Ruta: /reservas
+Método: POST
+Descripción: Inserta los datos para hacer una reserva, validando que una habitacion no este ocupada en esa misma fecha
+
+Parametros de Entrada:
+p_id_cliente: id del cliente
+p_id_habitacion: id de la habitación
+p_fecha_inicio_hospedaje: fecha del inicio de hospedaje
+p_fecha_fin_hospedaje: fecha de fin de hospedaje
+ejemplo de JSON: 
+       { 
+          "p_id_cliente" : 1,
+          "p_id_habitacion" : 4,
+          "p_fecha_inicio_hospedaje" : "2023-07-15",
+          "p_fecha_fin_hospedaje" : "2023-07-18"
+       } 
+
+Parámetros de salida: 
+mensaje de validación si la fecha de fin es menor a la de inicio de hospedaje:
+{'error': 'La fecha de fin de hospedaje no puede ser menor que la fecha de inicio de hospedaje.'}
+caso contrario:
+msg : Se inserto correctamente la reserva
+
+validando que una habitacion no este ocupada en esa misma fecha:
+{
+    "error": "La habitación no está disponible para el período especificado."
+}
+caso contrario:
+msg : Se inserto correctamente la reserva
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<Busca habitaciones en un rango de fechas>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Ruta:/habitaciones?fecha_inicio=2023-07-16&fecha_fin=2023-07-18
+Método: GET
+Descripción: Permite  buscar el listado de habitaciones disponible en un rango de fechas, enviandole las fechas en un query params
+
+query params:
+fecha_inicio
+fecha_fin
+
+Parámetros de respuesta: 
+numero_habitacion: numero de la habitación
+precio: precio de la habitación
+
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<Buscar habitacion por fecha>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Ruta: /habitaciones/fecha/<fecha>
+Método: GET
+Descripción: Pemite realizar una búsqueda eligiendo un día en particular y mostrar todas, 
+discriminando  cuales están disponibles y cuales ocupadas. Enviandole una fecha   
+
+Parámetros para la solicitud:
+fecha : fecha especifica para buscar habitaciones
+
+Parámetros de respuesta:
+estado: el estado de habitacion si esta ocupada o no.
+numero_habitacion: numero de la habitación
+precio: precio de la habitación
+
+
+<<<<<<<<<<Buscar las habitaciones por un precio>>>>>>>>>>>>>>
+
+Ruta: /habitaciones/precio/<precio>
+Método: GET
+Descripción: Permite buscar todas las habitaciones con un precio menor al elegido. Enviandole un precio 
+
+Parámetros para la solicitud:
+precio: precio de la habitación para filtrar
+
+Parámetros de respuesta:
+numero_habitacion: numero de la habitación
+precio: precio de la habitación
+
+
