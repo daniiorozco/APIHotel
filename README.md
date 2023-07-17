@@ -46,6 +46,8 @@ db_config = {
 <br/>
 y el archivo donde va la palabra secreta pones lo siguiente : SECRET_KEY= 'tuPalabraSecreta'
 
-
+<br/>
+<br/>
+Para infromacion de las funcionalidas de cada endpoint, leer el documento de endpoints.txt
 
 
