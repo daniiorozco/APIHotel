@@ -26,6 +26,23 @@ Una vez activado el entorno virtual y haber descargado el proyecto y ubicado en 
 pones el siguiente comando:
 <br/>
 'pip install requirements.txt'
+<br/>
+<br/>
+Para la Base de Datos se usa MySQL, la unica configuración seria correr el script .sql en el programa que uses, ya sea phpmyadmin u otro.
+<br/>
+Tmbien es importante que crees dos archivos uno para la configuracion de la BDD y otro para establecer la palabra secreta del JWT.
+<br/>
+En mi mi caso lo llame el archivo dbConfig
+### Configuración de la base de datos MySQL
+db_config = {
+    'user': 'tuUsuario',
+    'password': 'tuPassword',
+    'host': 'tuHost',
+    'database': 'nombreBDD'
+}
+
+<br/>
+y el archivo donde va la palabra secreta pones lo siguiente : SECRET_KEY= 'tuPalabraSecreta'
 
 
 
