@@ -14,7 +14,7 @@ Dependiendo de su rol va a poder acceder a cierta información del sistema.
 ![image](https://github.com/daniiorozco/APIHotel/assets/101194558/aac66a30-5373-4be5-a3d7-38bb048898ab)
 
 ### Configuración para uso
-En primer lugar es necesario que tengas instalado python en tu notebook (Para mi proyecto use la version 3.0.0).
+En primer lugar es necesario que tengas instalado python en tu notebook (Para mi proyecto use la version 3.11.2).
 Lo siguiente es crear un entorno virtual, para eso vas abrir una consola, decide en que carpeta quieres crearlo y ejecuta el módulo venv como script con la ruta a la carpeta:
 python -m venv nombreCarpeta
 <br/>
