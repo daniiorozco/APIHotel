@@ -27,7 +27,7 @@ nombreCarpeta\Scripts\activate.bat
 Una vez activado el entorno virtual y haber descargado el proyecto y ubicado en tu carpeta local, vas a descargar las librerias que utiliza el proyecto para eso en la consola
 pones el siguiente comando:
 <br/>
-'pip install requirements.txt'
+'pip install -r requirements.txt'
 <br/>
 <br/>
 Para la Base de Datos se usa MySQL, la unica configuración seria correr el script .sql en el programa que uses, ya sea phpmyadmin u otro.
