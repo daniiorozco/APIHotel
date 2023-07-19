@@ -3,3 +3,4 @@ Flask-JWT-Extended
 mysql-connector-python
 PyJWT
 waitress
+flask_cors

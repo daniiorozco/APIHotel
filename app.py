@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, abort
+from flask_cors import CORS
 from functools import wraps
 import mysql.connector
 import jwt
@@ -7,7 +8,7 @@ import validaciones
 from config import SECRET_KEY
 
 app = Flask(__name__)
-
+CORS(app)
 app.config['SECRET_KEY'] = SECRET_KEY
 
 
@@ -33,7 +34,7 @@ def login():
             token = jwt.encode(payload, secret, algorithm='HS256')
 
             # Devolver el token en la respuesta
-            return jsonify({'token': token})
+            return jsonify({'token': token, 'rol' : rol})
         else:
             return jsonify({'status': 401 , "message" :'Credenciales inválidas.'}), 401
 
