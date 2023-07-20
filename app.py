@@ -29,7 +29,7 @@ def login():
         secret = app.config['SECRET_KEY']
 
         if rol[1]:
-            payload = {"usuario": usuario,"id_cliente" : rol[0], "rol": rol[1]}
+            payload = {"usuario": usuario,"id" : rol[0], "rol": rol[1]}
 
             token = jwt.encode(payload, secret, algorithm='HS256')
 

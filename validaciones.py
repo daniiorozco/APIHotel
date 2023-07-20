@@ -49,23 +49,26 @@ def validarUsuario (usuario,clave):
         cursor = connection.cursor()
 
         # Consulta para validar las credenciales del usuario y obtener el rol
-        query = """
-        SELECT c.id ,u.rol
-        FROM cliente c INNER JOIN usuario u on c.id_usuario = u.id
-        WHERE u.usuario = %s AND u.clave = %s
-        """
+        ##query = """
+        ##SELECT c.id ,u.rol
+        ##FROM cliente c INNER JOIN usuario u on c.id_usuario = u.id
+        ##WHERE u.usuario = %s AND u.clave = %s
+        ##"""
 
         # Parámetros de la consulta
-        params = (usuario, clave)
+        ##params = (usuario, clave)
 
         # Ejecutar la consulta
-        cursor.execute(query, params)
-        result = cursor.fetchone()
+        results = cursor.callproc('sp_validar_usuario',[usuario,clave])
+        ##result = cursor.fetchone()
+        results= []
+        for result in cursor.stored_results():
+             results.extend(result.fetchall())
 
         # Verificar si las credenciales son válidas
-        if result:
-            rol = result  # Obtener el rol de la consulta
-            return rol
+        if results:
+            #rol = results
+            return results[0]
         else:
             return None
 
