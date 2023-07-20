@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-07-2023 a las 22:55:01
+-- Tiempo de generación: 20-07-2023 a las 23:08:06
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -25,6 +25,10 @@ DELIMITER $$
 --
 -- Procedimientos
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spd_habitacion` (IN `num_habitacion` INT)   BEGIN
+  UPDATE habitacion h set h.baja_fecha = NOW() WHERE h.numero_habitacion = num_habitacion;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spi_cliente` (IN `usuario` VARCHAR(60), IN `clave` VARCHAR(60), IN `nombre` VARCHAR(60), IN `apellido` VARCHAR(60))   BEGIN
     insert INTO usuario (usuario,clave,rol) VALUES (usuario,clave,"cliente");
   
@@ -70,6 +74,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sps_habitaciones` (IN `fecha` DATE)
  SELECT numero_habitacion,precio,estado FROM habitacion;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sps_habitaciones_emple` ()   BEGIN
+  SELECT * from habitacion h where h.baja_fecha IS null;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sps_habitaciones_x_busqueda` (IN `fecha_inicio` DATE, IN `fecha_fin` DATE, IN `precio` DOUBLE, IN `id_habitacion` INT)   BEGIN
 -- Búsqueda de habitaciones disponibles en un rango de fechas
   IF fecha_inicio IS NOT NULL AND fecha_fin IS NOT NULL THEN
@@ -99,7 +107,7 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sps_habitaciones_x_fechas` (IN `fecha_inicio` DATE, IN `fecha_fin` DATE)   BEGIN
 -- Búsqueda de habitaciones disponibles en un rango de fechas
  
-  SELECT h.numero_habitacion,h.precio  FROM habitacion h
+  SELECT h.id, h.numero_habitacion,h.precio  FROM habitacion h
   WHERE h.id NOT IN(
     SELECT r.id_habitacion FROM reserva r
     WHERE (fecha_inicio BETWEEN r.fecha_inicio_hospedaje AND r.fecha_fin_hospedaje)
@@ -143,6 +151,18 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_precio_habitacion` (IN `num_hab
       num_habitacion;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_validar_usuario` (IN `usu` VARCHAR(60), IN `pass` VARCHAR(60))   BEGIN
+   IF EXISTS(SELECT 1 FROM cliente c INNER JOIN usuario u on c.id_usuario = u.id
+        WHERE u.usuario = usu AND u.clave = pass)
+   THEN
+       SELECT c.id ,u.rol
+        FROM cliente c INNER JOIN usuario u on c.id_usuario = u.id
+        WHERE u.usuario = usu AND u.clave = pass;
+    ELSE
+      SELECT u.id, u.rol FROM usuario u WHERE u.usuario = usu AND u.clave = pass;
+   END IF;
+END$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -168,7 +188,8 @@ INSERT INTO `cliente` (`id`, `nombre`, `apellido`, `id_usuario`, `alta_fecha`, `
 (1, 'Daniela', 'Londoño', 1, '2023-07-06 20:16:23', NULL),
 (2, 'Pedro', 'Perez', 2, '2023-07-06 20:37:38', NULL),
 (3, 'Tony', 'orozco', 3, '2023-07-12 01:19:35', NULL),
-(4, 'alma', 'villa', 5, '2023-07-14 19:50:16', NULL);
+(4, 'alma', 'villa', 5, '2023-07-14 19:50:16', NULL),
+(5, 'vicente', 'fernadez', 6, '2023-07-20 02:29:41', NULL);
 
 -- --------------------------------------------------------
 
@@ -213,13 +234,14 @@ CREATE TABLE `habitacion` (
 
 INSERT INTO `habitacion` (`id`, `precio`, `numero_habitacion`, `estado`, `alta_fecha`, `baja_fecha`) VALUES
 (1, 3500, 1, 1, '2023-07-06 20:21:17', NULL),
-(2, 4500, 2, 1, '2023-07-06 20:38:50', NULL),
-(3, 2800, 3, 1, '2023-07-07 16:26:51', NULL),
+(2, 4600, 2, 1, '2023-07-06 20:38:50', NULL),
+(3, 2500, 3, 1, '2023-07-07 16:26:51', NULL),
 (4, 4000, 4, 1, '2023-07-10 16:02:32', NULL),
 (5, 3000, 5, 1, '2023-07-12 18:22:05', NULL),
 (6, 3000, 6, 1, '2023-07-13 18:13:08', NULL),
 (8, 3800, 7, 1, '2023-07-13 20:55:18', NULL),
-(9, 3800, 8, 1, '2023-07-14 19:32:00', NULL);
+(9, 3800, 8, 1, '2023-07-14 19:32:00', '2023-07-20 19:07:34'),
+(10, 6000, 9, 1, '2023-07-20 17:00:06', '2023-07-20 19:05:30');
 
 -- --------------------------------------------------------
 
@@ -249,7 +271,8 @@ INSERT INTO `reserva` (`id`, `id_habitacion`, `id_cliente`, `alta_fecha`, `fecha
 (8, 3, 3, '2023-07-12 19:50:17', '2023-07-18', '2023-07-21'),
 (9, 3, 2, '2023-07-13 18:18:32', '2023-07-24', '2023-07-26'),
 (10, 4, 2, '2023-07-13 18:26:06', '2023-07-23', '2023-07-25'),
-(11, 3, 1, '2023-07-14 19:43:03', '2023-07-29', '2023-07-30');
+(11, 3, 1, '2023-07-14 19:43:03', '2023-07-29', '2023-07-30'),
+(12, 1, 4, '2023-07-20 15:38:42', '2023-08-01', '2023-08-04');
 
 -- --------------------------------------------------------
 
@@ -275,7 +298,8 @@ INSERT INTO `usuario` (`id`, `usuario`, `clave`, `rol`, `alta_fecha`, `baja_fech
 (2, 'pepe', '12345', 'cliente', '2023-07-06 20:37:38', NULL),
 (3, 'Tony02', '12345', 'cliente', '2023-07-12 01:19:35', NULL),
 (4, 'admisin', 'admisin', 'empleado', '2023-07-13 18:06:39', NULL),
-(5, 'almita01', '12345', 'cliente', '2023-07-14 19:50:16', NULL);
+(5, 'almita01', '12345', 'cliente', '2023-07-14 19:50:16', NULL),
+(6, 'vicent', 'vicent01', 'cliente', '2023-07-20 02:29:41', NULL);
 
 --
 -- Índices para tablas volcadas
@@ -324,7 +348,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `empleado`
@@ -336,19 +360,19 @@ ALTER TABLE `empleado`
 -- AUTO_INCREMENT de la tabla `habitacion`
 --
 ALTER TABLE `habitacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `reserva`
 --
 ALTER TABLE `reserva`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restricciones para tablas volcadas
