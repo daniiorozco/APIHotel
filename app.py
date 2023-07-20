@@ -28,8 +28,8 @@ def login():
 
         secret = app.config['SECRET_KEY']
 
-        if rol:
-            payload = {"usuario": usuario, "rol": rol}
+        if rol[1]:
+            payload = {"usuario": usuario,"id_cliente" : rol[0], "rol": rol[1]}
 
             token = jwt.encode(payload, secret, algorithm='HS256')
 
@@ -318,7 +318,7 @@ def habitacionesDisponibles():
             results = result.fetchall()
 
         if results:
-            return jsonify({'data': results})
+            return jsonify( results)
         else:
             msg = "No hay information para mostar"
             return jsonify({'data': msg})

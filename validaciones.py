@@ -50,9 +50,9 @@ def validarUsuario (usuario,clave):
 
         # Consulta para validar las credenciales del usuario y obtener el rol
         query = """
-        SELECT rol
-        FROM usuario
-        WHERE usuario = %s AND clave = %s
+        SELECT c.id ,u.rol
+        FROM cliente c INNER JOIN usuario u on c.id_usuario = u.id
+        WHERE u.usuario = %s AND u.clave = %s
         """
 
         # Parámetros de la consulta
@@ -64,7 +64,7 @@ def validarUsuario (usuario,clave):
 
         # Verificar si las credenciales son válidas
         if result:
-            rol = result[0]  # Obtener el rol de la consulta
+            rol = result  # Obtener el rol de la consulta
             return rol
         else:
             return None
