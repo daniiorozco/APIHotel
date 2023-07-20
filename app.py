@@ -102,7 +102,30 @@ def createCliente():
             connection.close()
 
 # ----------------------end points habitaciones----------
+@app.route('/habitacionesAdministraccion', methods=['GET'])
+@rutaProtegida('empleado')
+def habitacionesEmpleado():
+    try:
+        connection = mysql.connector.connect(**dbConfig.db_config)
+        cursor = connection.cursor(dictionary=True)
 
+        results = cursor.callproc('sps_habitaciones_emple')
+
+        for result in cursor.stored_results():
+            results = result.fetchall()
+
+        if results:
+            return jsonify( results)
+        else:
+            msg = "No hay information para mostar"
+            return jsonify(msg)
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    finally:
+        if (connection.is_connected()):
+            cursor.close()
+            connection.close()
 
 @app.route('/habitaciones', methods=['POST'])
 @rutaProtegida('empleado')
@@ -200,6 +223,27 @@ def updateHabitacionEstado(numHabitacion):
             cursor.close()
             connection.close()
 
+@app.route('/habitaciones/<numHabitacion>', methods=['DELETE'])
+@rutaProtegida('empleado')
+def deleteHabitacion(numHabitacion):
+    try:
+        connection = mysql.connector.connect(**dbConfig.db_config)
+        cursor = connection.cursor(dictionary=True)
+
+
+        cursor.callproc('spd_habitacion', [numHabitacion])
+
+        connection.commit()
+        msg = 'Se elimino correctamente la habitación'
+        return jsonify(msg)
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    finally:
+        if (connection.is_connected()):
+            cursor.close()
+            connection.close()
+
 # ---------------------------end points RESERVAS---------------------
 
 @app.route('/reservas', methods=['GET'])
@@ -215,7 +259,7 @@ def getReservas():
             results = result.fetchall()
 
         if results:
-            return jsonify({'data': results})
+            return jsonify(results)
         else:
             msg = "No hay information para mostar"
             return jsonify({'data': msg})
@@ -241,7 +285,7 @@ def getReservaPorFecha(fecha):
             results = result.fetchall()
 
         if results:
-            return jsonify({'data': results})
+            return jsonify(results)
         else:
             msg = "No hay information para mostar"
             return jsonify({'data': msg})
@@ -344,7 +388,7 @@ def listHabitaciones(fecha):
             results = result.fetchall()
 
         if results:
-            return jsonify({'data': results})
+            return jsonify(results)
         else:
             msg = "No hay information para mostar"
             return jsonify({'data': msg})
@@ -371,7 +415,7 @@ def getHabitacionesPrecio(precio):
             results = result.fetchall()
 
         if results:
-            return jsonify({'data': results})
+            return jsonify(results)
         else:
             msg = "No hay information para mostar"
             return jsonify({'data': msg})
@@ -398,7 +442,7 @@ def getHabitacion(id):
             results = result.fetchall()
 
         if results:
-            return jsonify({'data': results})
+            return jsonify(results)
         else:
             msg = "No hay information para mostar"
             return jsonify({'data': msg})
