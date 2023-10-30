@@ -39,7 +39,7 @@ def login():
             return jsonify({'status': 401 , "message" :'Credenciales inválidas.'}), 401
 
     except Exception as e:
-        return jsonify({'error': str(e)})
+        return jsonify({'status': 401 , "message" :'Credenciales inválidas.'}), 401
 
 #funcion para verificar las rutas con el token y rol
 def rutaProtegida(rol_esperado):
